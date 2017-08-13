@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import range from 'lodash.range';
 import CalendarHeatmap from '../src';
 import { shiftDate } from '../src/dateHelpers';
+import ReactTooltip from 'react-tooltip';
 
 const today = new Date();
 
@@ -44,6 +45,14 @@ function customOnClick(value) {
 }
 
 const customTooltipDataAttrs = { 'data-toggle': 'tooltip' };
+
+const customTooltipDataAttrs2 = value => {
+    return {
+        'data-for': `tip-${Date.parse(value.date)}`,
+        'data-tip': `${value.count ? value.count : 'No'} contributions on ${value.date.toDateString()}`
+    }
+};
+
 const randomValues = generateRandomValues(200);
 
 const githubURL = "https://github.com/patientslikeme/react-calendar-heatmap";
@@ -63,6 +72,15 @@ const DemoItem = (props) => (
 );
 
 class Demo extends React.Component {
+    renderTooltips() {
+        return randomValues.map(randomValue => {
+            const id = Date.parse(randomValue.date);
+            return <ReactTooltip
+                key={id}
+                id={`tip-${id}`}
+            />
+        });
+    }
   render() {
     return (
       <div className="container">
@@ -81,7 +99,7 @@ class Demo extends React.Component {
               values={randomValues}
               classForValue={githubClassForValue}
               titleForValue={customTitleForValue}
-              tooltipDataAttrs={customTooltipDataAttrs}
+              tooltipDataAttrs={customTooltipDataAttrs2}
               onClick={customOnClick}
             />
           </div>
@@ -93,6 +111,7 @@ class Demo extends React.Component {
               tooltipDataAttrs={customTooltipDataAttrs}
               onClick={customOnClick}
             />
+            {this.renderTooltips()}
           </div>
         </div>
 
